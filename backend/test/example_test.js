@@ -6,8 +6,8 @@ const app = require('../server');
 const connectDB = require('../config/db');
 const mongoose = require('mongoose');
 const sinon = require('sinon');
-const Task = require('../models/Task');
-const { updateTask,getTasks,addTask,deleteTask } = require('../controllers/taskController');
+const application = require('../models/application');
+const { updateapplication,getapplications,addapplication,deleteapplication } = require('../controllers/applicationController');
 const { expect } = chai;
 
 chai.use(chaiHttp);
@@ -15,20 +15,20 @@ let server;
 let port;
 
 
-describe('AddTask Function Test', () => {
+describe('Addapplication Function Test', () => {
 
-  it('should create a new task successfully', async () => {
+  it('should create a new application successfully', async () => {
     // Mock request data
     const req = {
       user: { id: new mongoose.Types.ObjectId() },
-      body: { title: "New Task", description: "Task description", deadline: "2025-12-31" }
+      body: { title: "New application", description: "application description", deadline: "2025-12-31" }
     };
 
-    // Mock task that would be created
-    const createdTask = { _id: new mongoose.Types.ObjectId(), ...req.body, userId: req.user.id };
+    // Mock application that would be created
+    const createdapplication = { _id: new mongoose.Types.ObjectId(), ...req.body, userId: req.user.id };
 
-    // Stub Task.create to return the createdTask
-    const createStub = sinon.stub(Task, 'create').resolves(createdTask);
+    // Stub application.create to return the createdapplication
+    const createStub = sinon.stub(application, 'create').resolves(createdapplication);
 
     // Mock response object
     const res = {
@@ -37,25 +37,25 @@ describe('AddTask Function Test', () => {
     };
 
     // Call function
-    await addTask(req, res);
+    await addapplication(req, res);
 
     // Assertions
     expect(createStub.calledOnceWith({ userId: req.user.id, ...req.body })).to.be.true;
     expect(res.status.calledWith(201)).to.be.true;
-    expect(res.json.calledWith(createdTask)).to.be.true;
+    expect(res.json.calledWith(createdapplication)).to.be.true;
 
     // Restore stubbed methods
     createStub.restore();
   });
 
   it('should return 500 if an error occurs', async () => {
-    // Stub Task.create to throw an error
-    const createStub = sinon.stub(Task, 'create').throws(new Error('DB Error'));
+    // Stub application.create to throw an error
+    const createStub = sinon.stub(application, 'create').throws(new Error('DB Error'));
 
     // Mock request data
     const req = {
       user: { id: new mongoose.Types.ObjectId() },
-      body: { title: "New Task", description: "Task description", deadline: "2025-12-31" }
+      body: { title: "New application", description: "application description", deadline: "2025-12-31" }
     };
 
     // Mock response object
@@ -65,7 +65,7 @@ describe('AddTask Function Test', () => {
     };
 
     // Call function
-    await addTask(req, res);
+    await addapplication(req, res);
 
     // Assertions
     expect(res.status.calledWith(500)).to.be.true;
@@ -80,24 +80,24 @@ describe('AddTask Function Test', () => {
 
 describe('Update Function Test', () => {
 
-  it('should update task successfully', async () => {
-    // Mock task data
-    const taskId = new mongoose.Types.ObjectId();
-    const existingTask = {
-      _id: taskId,
-      title: "Old Task",
+  it('should update application successfully', async () => {
+    // Mock application data
+    const applicationId = new mongoose.Types.ObjectId();
+    const existingapplication = {
+      _id: applicationId,
+      title: "Old application",
       description: "Old Description",
       completed: false,
       deadline: new Date(),
       save: sinon.stub().resolvesThis(), // Mock save method
     };
-    // Stub Task.findById to return mock task
-    const findByIdStub = sinon.stub(Task, 'findById').resolves(existingTask);
+    // Stub application.findById to return mock application
+    const findByIdStub = sinon.stub(application, 'findById').resolves(existingapplication);
 
     // Mock request & response
     const req = {
-      params: { id: taskId },
-      body: { title: "New Task", completed: true }
+      params: { id: applicationId },
+      body: { title: "New application", completed: true }
     };
     const res = {
       json: sinon.spy(), 
@@ -105,11 +105,11 @@ describe('Update Function Test', () => {
     };
 
     // Call function
-    await updateTask(req, res);
+    await updateapplication(req, res);
 
     // Assertions
-    expect(existingTask.title).to.equal("New Task");
-    expect(existingTask.completed).to.equal(true);
+    expect(existingapplication.title).to.equal("New application");
+    expect(existingapplication.completed).to.equal(true);
     expect(res.status.called).to.be.false; // No error status should be set
     expect(res.json.calledOnce).to.be.true;
 
@@ -119,8 +119,8 @@ describe('Update Function Test', () => {
 
 
 
-  it('should return 404 if task is not found', async () => {
-    const findByIdStub = sinon.stub(Task, 'findById').resolves(null);
+  it('should return 404 if application is not found', async () => {
+    const findByIdStub = sinon.stub(application, 'findById').resolves(null);
 
     const req = { params: { id: new mongoose.Types.ObjectId() }, body: {} };
     const res = {
@@ -128,16 +128,16 @@ describe('Update Function Test', () => {
       json: sinon.spy()
     };
 
-    await updateTask(req, res);
+    await updateapplication(req, res);
 
     expect(res.status.calledWith(404)).to.be.true;
-    expect(res.json.calledWith({ message: 'Task not found' })).to.be.true;
+    expect(res.json.calledWith({ message: 'application not found' })).to.be.true;
 
     findByIdStub.restore();
   });
 
   it('should return 500 on error', async () => {
-    const findByIdStub = sinon.stub(Task, 'findById').throws(new Error('DB Error'));
+    const findByIdStub = sinon.stub(application, 'findById').throws(new Error('DB Error'));
 
     const req = { params: { id: new mongoose.Types.ObjectId() }, body: {} };
     const res = {
@@ -145,7 +145,7 @@ describe('Update Function Test', () => {
       json: sinon.spy()
     };
 
-    await updateTask(req, res);
+    await updateapplication(req, res);
 
     expect(res.status.calledWith(500)).to.be.true;
     expect(res.json.called).to.be.true;
@@ -158,20 +158,20 @@ describe('Update Function Test', () => {
 });
 
 
-describe('GetTask Function Test', () => {
+describe('Getapplication Function Test', () => {
 
-  it('should return tasks for the given user', async () => {
+  it('should return applications for the given user', async () => {
     // Mock user ID
     const userId = new mongoose.Types.ObjectId();
 
-    // Mock task data
-    const tasks = [
-      { _id: new mongoose.Types.ObjectId(), title: "Task 1", userId },
-      { _id: new mongoose.Types.ObjectId(), title: "Task 2", userId }
+    // Mock application data
+    const applications = [
+      { _id: new mongoose.Types.ObjectId(), title: "application 1", userId },
+      { _id: new mongoose.Types.ObjectId(), title: "application 2", userId }
     ];
 
-    // Stub Task.find to return mock tasks
-    const findStub = sinon.stub(Task, 'find').resolves(tasks);
+    // Stub application.find to return mock applications
+    const findStub = sinon.stub(application, 'find').resolves(applications);
 
     // Mock request & response
     const req = { user: { id: userId } };
@@ -181,11 +181,11 @@ describe('GetTask Function Test', () => {
     };
 
     // Call function
-    await getTasks(req, res);
+    await getapplications(req, res);
 
     // Assertions
     expect(findStub.calledOnceWith({ userId })).to.be.true;
-    expect(res.json.calledWith(tasks)).to.be.true;
+    expect(res.json.calledWith(applications)).to.be.true;
     expect(res.status.called).to.be.false; // No error status should be set
 
     // Restore stubbed methods
@@ -193,8 +193,8 @@ describe('GetTask Function Test', () => {
   });
 
   it('should return 500 on error', async () => {
-    // Stub Task.find to throw an error
-    const findStub = sinon.stub(Task, 'find').throws(new Error('DB Error'));
+    // Stub application.find to throw an error
+    const findStub = sinon.stub(application, 'find').throws(new Error('DB Error'));
 
     // Mock request & response
     const req = { user: { id: new mongoose.Types.ObjectId() } };
@@ -204,7 +204,7 @@ describe('GetTask Function Test', () => {
     };
 
     // Call function
-    await getTasks(req, res);
+    await getapplications(req, res);
 
     // Assertions
     expect(res.status.calledWith(500)).to.be.true;
@@ -218,17 +218,17 @@ describe('GetTask Function Test', () => {
 
 
 
-describe('DeleteTask Function Test', () => {
+describe('Deleteapplication Function Test', () => {
 
-  it('should delete a task successfully', async () => {
+  it('should delete a application successfully', async () => {
     // Mock request data
     const req = { params: { id: new mongoose.Types.ObjectId().toString() } };
 
-    // Mock task found in the database
-    const task = { remove: sinon.stub().resolves() };
+    // Mock application found in the database
+    const application = { remove: sinon.stub().resolves() };
 
-    // Stub Task.findById to return the mock task
-    const findByIdStub = sinon.stub(Task, 'findById').resolves(task);
+    // Stub application.findById to return the mock application
+    const findByIdStub = sinon.stub(application, 'findById').resolves(application);
 
     // Mock response object
     const res = {
@@ -237,20 +237,20 @@ describe('DeleteTask Function Test', () => {
     };
 
     // Call function
-    await deleteTask(req, res);
+    await deleteapplication(req, res);
 
     // Assertions
     expect(findByIdStub.calledOnceWith(req.params.id)).to.be.true;
-    expect(task.remove.calledOnce).to.be.true;
-    expect(res.json.calledWith({ message: 'Task deleted' })).to.be.true;
+    expect(application.remove.calledOnce).to.be.true;
+    expect(res.json.calledWith({ message: 'application deleted' })).to.be.true;
 
     // Restore stubbed methods
     findByIdStub.restore();
   });
 
-  it('should return 404 if task is not found', async () => {
-    // Stub Task.findById to return null
-    const findByIdStub = sinon.stub(Task, 'findById').resolves(null);
+  it('should return 404 if application is not found', async () => {
+    // Stub application.findById to return null
+    const findByIdStub = sinon.stub(application, 'findById').resolves(null);
 
     // Mock request data
     const req = { params: { id: new mongoose.Types.ObjectId().toString() } };
@@ -262,20 +262,20 @@ describe('DeleteTask Function Test', () => {
     };
 
     // Call function
-    await deleteTask(req, res);
+    await deleteapplication(req, res);
 
     // Assertions
     expect(findByIdStub.calledOnceWith(req.params.id)).to.be.true;
     expect(res.status.calledWith(404)).to.be.true;
-    expect(res.json.calledWith({ message: 'Task not found' })).to.be.true;
+    expect(res.json.calledWith({ message: 'application not found' })).to.be.true;
 
     // Restore stubbed methods
     findByIdStub.restore();
   });
 
   it('should return 500 if an error occurs', async () => {
-    // Stub Task.findById to throw an error
-    const findByIdStub = sinon.stub(Task, 'findById').throws(new Error('DB Error'));
+    // Stub application.findById to throw an error
+    const findByIdStub = sinon.stub(application, 'findById').throws(new Error('DB Error'));
 
     // Mock request data
     const req = { params: { id: new mongoose.Types.ObjectId().toString() } };
@@ -287,7 +287,7 @@ describe('DeleteTask Function Test', () => {
     };
 
     // Call function
-    await deleteTask(req, res);
+    await deleteapplication(req, res);
 
     // Assertions
     expect(res.status.calledWith(500)).to.be.true;
