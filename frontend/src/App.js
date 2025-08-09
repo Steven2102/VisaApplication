@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Applications from './pages/Applications';
+import PaymentPage from './pages/PaymentPage';
 import { useAuth } from './context/AuthContext';
 import './App.css';
 
@@ -67,6 +68,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/applications" element={<Applications />} />
+        <Route path="/payment/:id" element={<PaymentPage />} />
       </Routes>
     </Router>
   );

@@ -46,7 +46,7 @@ const ApplicationForm = ({ applications, setApplications, editingApplication, se
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded mb-6">
-      <h1 className="text-2xl font-bold mb-4">{editingApplication ? 'Your Form Name: Edit Operation' : 'Create new Visa application'}</h1>
+      <h1 className="text-2xl font-bold mb-4">{editingApplication ? 'Update Visa application' : 'Create new Visa application'}</h1>
       <input
         type="text"
         placeholder="Title"

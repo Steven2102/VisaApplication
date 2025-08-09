@@ -1,5 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
+import { Link } from 'react-router-dom'; // Add this import
 
 const ApplicationList = ({ applications, setApplications, setEditingApplication }) => {
   const { user } = useAuth();
@@ -31,10 +32,17 @@ const ApplicationList = ({ applications, setApplications, setEditingApplication 
             </button>
             <button
               onClick={() => handleDelete(application._id)}
-              className="bg-red-500 text-white px-4 py-2 rounded"
+              className="mr-2 bg-red-500 text-white px-4 py-2 rounded"
             >
               Delete
             </button>
+            <Link
+              to={`/payment/${application._id}`}
+              className="bg-green-500 text-white px-4 py-2 rounded"
+              style={{ textDecoration: 'none' }}
+            >
+              Pay
+            </Link>
           </div>
         </div>
       ))}
