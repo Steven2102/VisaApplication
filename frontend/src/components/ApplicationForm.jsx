@@ -4,17 +4,22 @@ import axiosInstance from '../axiosConfig';
 
 const ApplicationForm = ({ applications, setApplications, editingApplication, setEditingApplication }) => {
   const { user } = useAuth();
-  const [formData, setFormData] = useState({ title: '', description: '', deadline: '' });
+  const [formData, setFormData] = useState({ title: '', firstname: '', lastname: '', countryofresidence: '', email: '', city: '', dateofarrival: '', dateofdeparture: ''});
 
   useEffect(() => {
     if (editingApplication) {
       setFormData({
         title: editingApplication.title,
-        description: editingApplication.description,
-        deadline: editingApplication.deadline,
+        firstname: editingApplication.firstname,
+        lastname: editingApplication.lastname,
+        countryofresidence: editingApplication.countryofresidence,
+        email: editingApplication.email,
+        city: editingApplication.city,
+        dateofarrival: editingApplication.dateofarrival,
+        dateofdeparture: editingApplication.dateofdeparture,
       });
     } else {
-      setFormData({ title: '', description: '', deadline: '' });
+      setFormData({ title: '', firstname: '', lastname: '', countryofresidence: '', email: '', city: '', dateofarrival: '', dateofdeparture: ''});
     }
   }, [editingApplication]);
 
@@ -33,7 +38,7 @@ const ApplicationForm = ({ applications, setApplications, editingApplication, se
         setApplications([...applications, response.data]);
       }
       setEditingApplication(null);
-      setFormData({ title: '', description: '', deadline: '' });
+      setFormData({ title: '', firstname: '', lastname: '', countryofresidence: '', email: '', city: '', dateofarrival: '', dateofdeparture: ''});
     } catch (error) {
       alert('Failed to save application.');
     }
@@ -51,15 +56,42 @@ const ApplicationForm = ({ applications, setApplications, editingApplication, se
       />
       <input
         type="text"
-        placeholder="Description"
-        value={formData.description}
-        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+        placeholder="Firstname"
+        value={formData.firstname}
+        onChange={(e) => setFormData({ ...formData, firstname: e.target.value })}
+        className="w-full mb-4 p-2 border rounded"
+      />
+      <input
+        type="text"
+        placeholder="Lastname"
+        value={formData.lastname}
+        onChange={(e) => setFormData({ ...formData, lastname: e.target.value })}
+        className="w-full mb-4 p-2 border rounded"
+      />
+      <input
+        type="text"
+        placeholder="Country of Residence"
+        value={formData.countryofresidence}
+        onChange={(e) => setFormData({ ...formData, countryofresidence: e.target.value })}
+        className="w-full mb-4 p-2 border rounded"
+      />
+      <input
+        type="text"
+        placeholder="City"
+        value={formData.city}
+        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
         className="w-full mb-4 p-2 border rounded"
       />
       <input
         type="date"
-        value={formData.deadline}
-        onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
+        value={formData.dateofarrival}
+        onChange={(e) => setFormData({ ...formData, dateofarrival: e.target.value })}
+        className="w-full mb-4 p-2 border rounded"
+      />
+      <input
+        type="date"
+        value={formData.dateofdeparture}
+        onChange={(e) => setFormData({ ...formData, dateofdeparture: e.target.value })}
         className="w-full mb-4 p-2 border rounded"
       />
       <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">

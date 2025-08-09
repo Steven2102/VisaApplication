@@ -1,5 +1,13 @@
+body {
+  background-color: #f5f6fa;
+  margin: 0;
+  font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+}
+
 .App {
   text-align: center;
+  background-color: #f5f6fa;
+  min-height: 100vh;
 }
 
 .App-logo {
@@ -26,6 +34,106 @@
 
 .App-link {
   color: #61dafb;
+}
+
+nav {
+  background-color: #e0e0e0 !important;
+  color: #222 !important;
+  box-shadow: 0 2px 8px #0001;
+}
+
+nav a,
+nav button {
+  color: #222 !important;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  margin-right: 1rem;
+  transition: color 0.2s;
+}
+
+nav a:hover,
+nav button:hover {
+  color: #555 !important;
+  text-decoration: underline;
+}
+
+.text-2xl {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.bg-white {
+  background: #fff;
+}
+
+.shadow-md {
+  box-shadow: 0 2px 8px #0001;
+}
+
+.rounded {
+  border-radius: 8px;
+}
+
+button,
+.bg-blue-600,
+.bg-red-500,
+.bg-green-500 {
+  background-color: #e0e0e0 !important;
+  color: #222 !important;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 2px 8px #0001;
+}
+
+button:hover,
+.bg-blue-600:hover,
+.bg-red-500:hover,
+.bg-green-500:hover {
+  background-color: #cccccc !important;
+  color: #111 !important;
+}
+
+input, select, textarea {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  font-size: 1rem;
+  background: #fafbfc;
+  transition: border 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #b0b0b0;
+  outline: none;
+}
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px #0001;
+}
+
+h1, h2, h3 {
+  color: #222;
+}
+
+.App-link {
+  color: #888;
+}
+
+.hero-text {
+  color: white;
+  text-shadow: 0 2px 8px #000;
 }
 
 @keyframes App-logo-spin {

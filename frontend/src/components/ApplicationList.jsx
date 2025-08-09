@@ -20,8 +20,8 @@ const ApplicationList = ({ applications, setApplications, setEditingApplication 
       {applications.map((application) => (
         <div key={application._id} className="bg-gray-100 p-4 mb-4 rounded shadow">
           <h2 className="font-bold">{application.title}</h2>
-          <p>{application.description}</p>
-          <p className="text-sm text-gray-500">Deadline: {new Date(application.deadline).toLocaleDateString()}</p>
+          <p className="text-sm text-gray-500">Date of Arrival: {new Date(application.dateofarrival).toLocaleDateString()}</p>
+          <p className="text-sm text-gray-500">Date of Departure: {new Date(application.dateofdeparture).toLocaleDateString()}</p>
           <div className="mt-2">
             <button
               onClick={() => setEditingApplication(application)}
