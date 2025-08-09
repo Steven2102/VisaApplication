@@ -8,6 +8,7 @@ const Profile = () => {
     name: '',
     email: '',
     city: '',
+    postalcode: '',
     address: '',
     phone: '',
   });
@@ -25,6 +26,7 @@ const Profile = () => {
           name: response.data.name,
           email: response.data.email,
           city: response.data.city || '',
+          postalcode: response.data.postalcode || '',
           address: response.data.address || '',
           phone: response.data.phone || '',
         });
@@ -84,6 +86,13 @@ const Profile = () => {
         />
         <input
           type="text"
+          placeholder="Postal code"
+          value={formData.postalcode}
+          onChange={(e) => setFormData({ ...formData, postalcode: e.target.value })}
+          className="w-full mb-4 p-2 border rounded"
+        />
+        <input
+          type="text"
           placeholder="Address"
           value={formData.address}
           onChange={(e) => setFormData({ ...formData, address: e.target.value })}
@@ -92,7 +101,7 @@ const Profile = () => {
         <input
           type="text"
           placeholder="Phone number"
-          value={formData.address}
+          value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
           className="w-full mb-4 p-2 border rounded"
         />
