@@ -1,10 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Applications from './pages/Applications';
-import PaymentPage from './pages/PaymentPage';
+import RequestInvoicePage from './pages/RequestInvoicePage';
 import { useAuth } from './context/AuthContext';
 import './App.css';
 
@@ -13,11 +14,24 @@ const Home = () => {
 
   return (
     <div className="App">
-      <div style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+      <div
+        style={{
+          position: 'relative',
+          display: 'inline-block',
+          width: '100%',
+          marginBottom: '1rem', 
+        }}
+      >
         <img
           src="/background.jpg"
           alt="Background"
-          style={{ width: '100%', borderRadius: '12px', maxHeight: '500px', objectFit: 'cover', filter: 'brightness(0.7)' }}
+          style={{
+            width: '100%',
+            borderRadius: '12px',
+            maxHeight: '500px',
+            objectFit: 'cover',
+            filter: 'brightness(0.7)',
+          }}
         />
         <div
           style={{
@@ -68,8 +82,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/applications" element={<Applications />} />
-        <Route path="/payment/:id" element={<PaymentPage />} />
+        <Route path="/request-invoice/:id" element={<RequestInvoicePage />} />
       </Routes>
+      <Footer />
     </Router>
   );
 }

@@ -1,7 +1,7 @@
-
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const invoiceRoutes = require('./routes/invoiceRoutes');
 const connectDB = require('./config/db');
 
 dotenv.config();
@@ -13,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
+app.use('/api/invoices', invoiceRoutes);
 
 // Export the app object for testing
 if (require.main === module) {
