@@ -1,21 +1,20 @@
 const Application = require('../models/Application');
-const getapplications = async (
-req,
-res) => {
-try {
-const applications = await Application.find({ userId: req.user.id });
-res.json(applications);
-} catch (error) {
-res.status(500).json({ message: error.message });
-}
+const getApplication = async (req, res) => {
+  try {
+    const application = await Application.findById(req.params.id);
+    if (!application) return res.status(404).json({ message: 'Application not found' });
+    res.json(application);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 const addapplication = async (
 req,
 res) => {
-const { title, firstname, lastname, countryofresidence, email, city, dateofarrival, dateofdeparture } = req.body;
+const { title, cost, firstname, lastname, countryofresidence, email, city, dateofarrival, dateofdeparture } = req.body;
 try {
-const application = await Application.create({ userId: req.user.id, title, firstname, lastname, countryofresidence, email, city, dateofarrival, dateofdeparture});
+const application = await Application.create({ userId: req.user.id, title, cost, firstname, lastname, countryofresidence, email, city, dateofarrival, dateofdeparture});
 res.status(201).json(application);
 } catch (error) {
 res.status(500).json({ message: error.message });
@@ -25,11 +24,12 @@ res.status(500).json({ message: error.message });
 const updateapplication = async (
 req,
 res) => {
-const { title, firstname, lastname, countryofresidence, email, city, dateofarrival, dateofdeparture} = req.body;
+const { title, cost, firstname, lastname, countryofresidence, email, city, dateofarrival, dateofdeparture} = req.body;
 try {
 const application = await Application.findById(req.params.id);
 if (!application) return res.status(404).json({ message: 'application not found' });
 application.title = title || application.title;
+application.cost = cost || application.cost
 application.firstname = firstname || application.firstname;
 application.lastname = lastname || application.lastname;
 application.countryofresidence = countryofresidence || application.countryofresidence;
@@ -56,4 +56,4 @@ res.json({ message: 'application deleted' });
 res.status(500).json({ message: error.message });
 }
 };
-module.exports = { getapplications, addapplication, updateapplication, deleteapplication };
+module.exports = { getApplication, addapplication, updateapplication, deleteapplication };
