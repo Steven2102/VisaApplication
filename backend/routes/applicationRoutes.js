@@ -3,7 +3,7 @@ const { getApplications, getApplication, addapplication, updateapplication, dele
 const { protect } = require('../middleware/authMiddleware');
 const router = express.Router();
 
-router.get('/', protect, getApplications);
+router.get('/', protect, getApplications); // Fetch all applications
 router.get('/:id', protect, getApplication); // Fetch a single application
 router.post('/', protect, addapplication); // Create new application
 router.put('/:id', protect, updateapplication); // Update application
