@@ -19,6 +19,7 @@ const getApplications = async (req, res) => {
   }
 };
 
+//creates a new visa application
 const addapplication = async (
 req,
 res) => {
