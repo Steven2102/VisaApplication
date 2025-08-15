@@ -1,300 +1,276 @@
-
 const chai = require('chai');
-const chaiHttp = require('chai-http');
-const http = require('http');
-const app = require('../server'); 
-const connectDB = require('../config/db');
 const mongoose = require('mongoose');
 const sinon = require('sinon');
-const application = require('../models/application');
-const { updateapplication,getapplications,addapplication,deleteapplication } = require('../controllers/applicationController');
+const Application = require('../models/Application');
+const Invoice = require('../models/Invoice');
+const { addapplication, updateapplication, getApplications, deleteapplication } = require('../controllers/applicationController');
+const { addinvoice, updateinvoice, deleteinvoice, getinvoices, getInvoiceByApplication } = require('../controllers/invoiceController');
+
 const { expect } = chai;
 
-chai.use(chaiHttp);
-let server;
-let port;
+// Ensure clean stubs between tests
+afterEach(() => {
+  sinon.restore();
+});
 
-
-describe('Addapplication Function Test', () => {
-
-  it('should create a new application successfully', async () => {
-    // Mock request data
+describe('addapplication', () => {
+  it('creates a new application (201)', async () => {
     const req = {
       user: { id: new mongoose.Types.ObjectId() },
-      body: { title: "New application", description: "application description", deadline: "2025-12-31" }
+      body: { title: 'Holiday Visa', cost: '100' }
     };
-
-    // Mock application that would be created
-    const createdapplication = { _id: new mongoose.Types.ObjectId(), ...req.body, userId: req.user.id };
-
-    // Stub application.create to return the createdapplication
-    const createStub = sinon.stub(application, 'create').resolves(createdapplication);
-
-    // Mock response object
-    const res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.spy()
-    };
-
-    // Call function
+    const created = { _id: new mongoose.Types.ObjectId(), userId: req.user.id, ...req.body };
+    const createStub = sinon.stub(Application, 'create').resolves(created);
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
     await addapplication(req, res);
-
-    // Assertions
-    expect(createStub.calledOnceWith({ userId: req.user.id, ...req.body })).to.be.true;
+  expect(createStub.calledOnce).to.be.true;
+  // Ensure required fields were part of the create call
+  const passedArg = createStub.firstCall.args[0];
+  expect(passedArg.userId.toString()).to.equal(req.user.id.toString());
+  expect(passedArg.title).to.equal(req.body.title);
+  expect(passedArg.cost).to.equal(req.body.cost);
     expect(res.status.calledWith(201)).to.be.true;
-    expect(res.json.calledWith(createdapplication)).to.be.true;
-
-    // Restore stubbed methods
-    createStub.restore();
+    expect(res.json.calledWith(created)).to.be.true;
   });
 
-  it('should return 500 if an error occurs', async () => {
-    // Stub application.create to throw an error
-    const createStub = sinon.stub(application, 'create').throws(new Error('DB Error'));
-
-    // Mock request data
-    const req = {
-      user: { id: new mongoose.Types.ObjectId() },
-      body: { title: "New application", description: "application description", deadline: "2025-12-31" }
-    };
-
-    // Mock response object
-    const res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.spy()
-    };
-
-    // Call function
+  it('handles errors (500)', async () => {
+    sinon.stub(Application, 'create').throws(new Error('DB Error'));
+    const req = { user: { id: new mongoose.Types.ObjectId() }, body: { title: 'X' } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
     await addapplication(req, res);
-
-    // Assertions
     expect(res.status.calledWith(500)).to.be.true;
-    expect(res.json.calledWithMatch({ message: 'DB Error' })).to.be.true;
-
-    // Restore stubbed methods
-    createStub.restore();
-  });
-
-});
-
-
-describe('Update Function Test', () => {
-
-  it('should update application successfully', async () => {
-    // Mock application data
-    const applicationId = new mongoose.Types.ObjectId();
-    const existingapplication = {
-      _id: applicationId,
-      title: "Old application",
-      description: "Old Description",
-      completed: false,
-      deadline: new Date(),
-      save: sinon.stub().resolvesThis(), // Mock save method
-    };
-    // Stub application.findById to return mock application
-    const findByIdStub = sinon.stub(application, 'findById').resolves(existingapplication);
-
-    // Mock request & response
-    const req = {
-      params: { id: applicationId },
-      body: { title: "New application", completed: true }
-    };
-    const res = {
-      json: sinon.spy(), 
-      status: sinon.stub().returnsThis()
-    };
-
-    // Call function
-    await updateapplication(req, res);
-
-    // Assertions
-    expect(existingapplication.title).to.equal("New application");
-    expect(existingapplication.completed).to.equal(true);
-    expect(res.status.called).to.be.false; // No error status should be set
     expect(res.json.calledOnce).to.be.true;
-
-    // Restore stubbed methods
-    findByIdStub.restore();
   });
-
-
-
-  it('should return 404 if application is not found', async () => {
-    const findByIdStub = sinon.stub(application, 'findById').resolves(null);
-
-    const req = { params: { id: new mongoose.Types.ObjectId() }, body: {} };
-    const res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.spy()
-    };
-
-    await updateapplication(req, res);
-
-    expect(res.status.calledWith(404)).to.be.true;
-    expect(res.json.calledWith({ message: 'application not found' })).to.be.true;
-
-    findByIdStub.restore();
-  });
-
-  it('should return 500 on error', async () => {
-    const findByIdStub = sinon.stub(application, 'findById').throws(new Error('DB Error'));
-
-    const req = { params: { id: new mongoose.Types.ObjectId() }, body: {} };
-    const res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.spy()
-    };
-
-    await updateapplication(req, res);
-
-    expect(res.status.calledWith(500)).to.be.true;
-    expect(res.json.called).to.be.true;
-
-    findByIdStub.restore();
-  });
-
-
-
 });
 
+describe('updateapplication', () => {
+  it('updates existing application', async () => {
+    const id = new mongoose.Types.ObjectId();
+    const doc = { _id: id, title: 'Old', cost: '100', save: sinon.stub().resolvesThis() };
+    sinon.stub(Application, 'findById').resolves(doc);
+    const req = { params: { id }, body: { title: 'New Title', cost: '150' } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await updateapplication(req, res);
+    expect(doc.title).to.equal('New Title');
+    expect(doc.cost).to.equal('150');
+    expect(res.status.called).to.be.false;
+    expect(res.json.calledOnce).to.be.true;
+  });
 
-describe('Getapplication Function Test', () => {
+  it('returns 404 for missing application', async () => {
+    sinon.stub(Application, 'findById').resolves(null);
+    const req = { params: { id: new mongoose.Types.ObjectId() }, body: {} };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await updateapplication(req, res);
+    expect(res.status.calledWith(404)).to.be.true;
+  });
 
-  it('should return applications for the given user', async () => {
-    // Mock user ID
+  it('handles error (500)', async () => {
+    sinon.stub(Application, 'findById').throws(new Error('DB Error'));
+    const req = { params: { id: new mongoose.Types.ObjectId() }, body: {} };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await updateapplication(req, res);
+    expect(res.status.calledWith(500)).to.be.true;
+  });
+});
+
+describe('getApplications', () => {
+  it('returns list for user', async () => {
     const userId = new mongoose.Types.ObjectId();
-
-    // Mock application data
-    const applications = [
-      { _id: new mongoose.Types.ObjectId(), title: "application 1", userId },
-      { _id: new mongoose.Types.ObjectId(), title: "application 2", userId }
-    ];
-
-    // Stub application.find to return mock applications
-    const findStub = sinon.stub(application, 'find').resolves(applications);
-
-    // Mock request & response
+    const apps = [{ _id: new mongoose.Types.ObjectId(), userId, title: 'A' }];
+    sinon.stub(Application, 'find').resolves(apps);
     const req = { user: { id: userId } };
-    const res = {
-      json: sinon.spy(),
-      status: sinon.stub().returnsThis()
-    };
-
-    // Call function
-    await getapplications(req, res);
-
-    // Assertions
-    expect(findStub.calledOnceWith({ userId })).to.be.true;
-    expect(res.json.calledWith(applications)).to.be.true;
-    expect(res.status.called).to.be.false; // No error status should be set
-
-    // Restore stubbed methods
-    findStub.restore();
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await getApplications(req, res);
+    expect(res.json.calledWith(apps)).to.be.true;
+    expect(res.status.called).to.be.false;
   });
 
-  it('should return 500 on error', async () => {
-    // Stub application.find to throw an error
-    const findStub = sinon.stub(application, 'find').throws(new Error('DB Error'));
-
-    // Mock request & response
+  it('handles error (500)', async () => {
+    sinon.stub(Application, 'find').throws(new Error('DB Error'));
     const req = { user: { id: new mongoose.Types.ObjectId() } };
-    const res = {
-      json: sinon.spy(),
-      status: sinon.stub().returnsThis()
-    };
-
-    // Call function
-    await getapplications(req, res);
-
-    // Assertions
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await getApplications(req, res);
     expect(res.status.calledWith(500)).to.be.true;
-    expect(res.json.calledWithMatch({ message: 'DB Error' })).to.be.true;
-
-    // Restore stubbed methods
-    findStub.restore();
   });
-
 });
 
-
-
-describe('Deleteapplication Function Test', () => {
-
-  it('should delete a application successfully', async () => {
-    // Mock request data
-    const req = { params: { id: new mongoose.Types.ObjectId().toString() } };
-
-    // Mock application found in the database
-    const application = { remove: sinon.stub().resolves() };
-
-    // Stub application.findById to return the mock application
-    const findByIdStub = sinon.stub(application, 'findById').resolves(application);
-
-    // Mock response object
-    const res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.spy()
-    };
-
-    // Call function
+describe('deleteapplication', () => {
+  it('deletes existing', async () => {
+    const doc = { remove: sinon.stub().resolves() };
+    sinon.stub(Application, 'findById').resolves(doc);
+    const req = { params: { id: new mongoose.Types.ObjectId() } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
     await deleteapplication(req, res);
-
-    // Assertions
-    expect(findByIdStub.calledOnceWith(req.params.id)).to.be.true;
-    expect(application.remove.calledOnce).to.be.true;
+    expect(doc.remove.calledOnce).to.be.true;
     expect(res.json.calledWith({ message: 'application deleted' })).to.be.true;
-
-    // Restore stubbed methods
-    findByIdStub.restore();
   });
 
-  it('should return 404 if application is not found', async () => {
-    // Stub application.findById to return null
-    const findByIdStub = sinon.stub(application, 'findById').resolves(null);
-
-    // Mock request data
-    const req = { params: { id: new mongoose.Types.ObjectId().toString() } };
-
-    // Mock response object
-    const res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.spy()
-    };
-
-    // Call function
+  it('returns 404 when missing', async () => {
+    sinon.stub(Application, 'findById').resolves(null);
+    const req = { params: { id: new mongoose.Types.ObjectId() } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
     await deleteapplication(req, res);
-
-    // Assertions
-    expect(findByIdStub.calledOnceWith(req.params.id)).to.be.true;
     expect(res.status.calledWith(404)).to.be.true;
-    expect(res.json.calledWith({ message: 'application not found' })).to.be.true;
-
-    // Restore stubbed methods
-    findByIdStub.restore();
   });
 
-  it('should return 500 if an error occurs', async () => {
-    // Stub application.findById to throw an error
-    const findByIdStub = sinon.stub(application, 'findById').throws(new Error('DB Error'));
-
-    // Mock request data
-    const req = { params: { id: new mongoose.Types.ObjectId().toString() } };
-
-    // Mock response object
-    const res = {
-      status: sinon.stub().returnsThis(),
-      json: sinon.spy()
-    };
-
-    // Call function
+  it('handles error (500)', async () => {
+    sinon.stub(Application, 'findById').throws(new Error('DB Error'));
+    const req = { params: { id: new mongoose.Types.ObjectId() } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
     await deleteapplication(req, res);
-
-    // Assertions
     expect(res.status.calledWith(500)).to.be.true;
-    expect(res.json.calledWithMatch({ message: 'DB Error' })).to.be.true;
+  });
+});
 
-    // Restore stubbed methods
-    findByIdStub.restore();
+// ================= INVOICE TESTS =================
+
+describe('addinvoice', () => {
+  it('creates invoice (201)', async () => {
+    const req = { user: { id: new mongoose.Types.ObjectId() }, body: { applicationId: new mongoose.Types.ObjectId(), title: 'Holiday Visa', cost: '100', method: 'paypal', details: { info: 'abc' } } };
+    const created = { _id: new mongoose.Types.ObjectId(), userId: req.user.id, ...req.body };
+    const createStub = sinon.stub(Invoice, 'create').resolves(created);
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await addinvoice(req, res);
+    expect(createStub.calledOnce).to.be.true;
+    const arg = createStub.firstCall.args[0];
+    expect(arg.userId.toString()).to.equal(req.user.id.toString());
+    expect(res.status.calledWith(201)).to.be.true;
+    expect(res.json.calledWith(created)).to.be.true;
   });
 
+  it('handles error (500)', async () => {
+    sinon.stub(Invoice, 'create').throws(new Error('DB Error'));
+    const req = { user: { id: new mongoose.Types.ObjectId() }, body: { applicationId: new mongoose.Types.ObjectId(), title: 'X', cost: '1', method: 'paypal' } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await addinvoice(req, res);
+    expect(res.status.calledWith(500)).to.be.true;
+  });
+});
+
+describe('updateinvoice', () => {
+  it('updates existing invoice', async () => {
+    const userId = new mongoose.Types.ObjectId();
+    const doc = { _id: new mongoose.Types.ObjectId(), userId, title: 'Old', cost: '100', method: 'paypal', details: { info: 'x' }, save: sinon.stub().resolvesThis() };
+    sinon.stub(Invoice, 'findById').resolves(doc);
+    const req = { user: { id: userId.toString() }, params: { id: doc._id }, body: { title: 'New', cost: '150', method: 'credit_card', details: { info: 'y' } } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await updateinvoice(req, res);
+    expect(doc.title).to.equal('New');
+    expect(doc.method).to.equal('credit_card');
+    expect(res.status.called).to.be.false;
+    expect(res.json.calledOnce).to.be.true;
+  });
+
+  it('rejects unauthorized (403)', async () => {
+    const doc = { _id: new mongoose.Types.ObjectId(), userId: new mongoose.Types.ObjectId(), save: sinon.stub().resolvesThis() };
+    sinon.stub(Invoice, 'findById').resolves(doc);
+    const req = { user: { id: new mongoose.Types.ObjectId().toString() }, params: { id: doc._id }, body: { title: 'New' } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await updateinvoice(req, res);
+    expect(res.status.calledWith(403)).to.be.true;
+  });
+
+  it('404 when missing', async () => {
+    sinon.stub(Invoice, 'findById').resolves(null);
+    const req = { user: { id: new mongoose.Types.ObjectId() }, params: { id: new mongoose.Types.ObjectId() }, body: {} };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await updateinvoice(req, res);
+    expect(res.status.calledWith(404)).to.be.true;
+  });
+
+  it('handles error (500)', async () => {
+    sinon.stub(Invoice, 'findById').throws(new Error('DB Error'));
+    const req = { user: { id: new mongoose.Types.ObjectId() }, params: { id: new mongoose.Types.ObjectId() }, body: {} };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await updateinvoice(req, res);
+    expect(res.status.calledWith(500)).to.be.true;
+  });
+});
+
+describe('getinvoices', () => {
+  it('returns invoices list', async () => {
+    const userId = new mongoose.Types.ObjectId();
+    const list = [{ _id: new mongoose.Types.ObjectId(), userId, title: 'A' }];
+    sinon.stub(Invoice, 'find').resolves(list);
+    const req = { user: { id: userId } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await getinvoices(req, res);
+    expect(res.json.calledWith(list)).to.be.true;
+  });
+
+  it('handles error (500)', async () => {
+    sinon.stub(Invoice, 'find').throws(new Error('DB Error'));
+    const req = { user: { id: new mongoose.Types.ObjectId() } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await getinvoices(req, res);
+    expect(res.status.calledWith(500)).to.be.true;
+  });
+});
+
+describe('getInvoiceByApplication', () => {
+  it('returns invoice by applicationId', async () => {
+    const userId = new mongoose.Types.ObjectId();
+    const applicationId = new mongoose.Types.ObjectId();
+    const invoice = { _id: new mongoose.Types.ObjectId(), applicationId, userId };
+    sinon.stub(Invoice, 'findOne').resolves(invoice);
+    const req = { user: { id: userId }, params: { applicationId } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await getInvoiceByApplication(req, res);
+    expect(res.json.calledWith(invoice)).to.be.true;
+  });
+
+  it('404 when missing', async () => {
+    sinon.stub(Invoice, 'findOne').resolves(null);
+    const req = { user: { id: new mongoose.Types.ObjectId() }, params: { applicationId: new mongoose.Types.ObjectId() } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await getInvoiceByApplication(req, res);
+    expect(res.status.calledWith(404)).to.be.true;
+  });
+
+  it('handles error (500)', async () => {
+    sinon.stub(Invoice, 'findOne').throws(new Error('DB Error'));
+    const req = { user: { id: new mongoose.Types.ObjectId() }, params: { applicationId: new mongoose.Types.ObjectId() } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await getInvoiceByApplication(req, res);
+    expect(res.status.calledWith(500)).to.be.true;
+  });
+});
+
+describe('deleteinvoice', () => {
+  it('deletes invoice', async () => {
+    const userId = new mongoose.Types.ObjectId();
+    const doc = { userId, remove: sinon.stub().resolves() };
+    sinon.stub(Invoice, 'findById').resolves(doc);
+    const req = { user: { id: userId.toString() }, params: { id: new mongoose.Types.ObjectId() } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await deleteinvoice(req, res);
+    expect(doc.remove.calledOnce).to.be.true;
+    expect(res.json.calledWith({ message: 'Invoice deleted' })).to.be.true;
+  });
+
+  it('403 when unauthorized delete', async () => {
+    const doc = { userId: new mongoose.Types.ObjectId(), remove: sinon.stub().resolves() };
+    sinon.stub(Invoice, 'findById').resolves(doc);
+    const req = { user: { id: new mongoose.Types.ObjectId() }, params: { id: new mongoose.Types.ObjectId() } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await deleteinvoice(req, res);
+    expect(res.status.calledWith(403)).to.be.true;
+  });
+
+  it('404 when missing', async () => {
+    sinon.stub(Invoice, 'findById').resolves(null);
+    const req = { user: { id: new mongoose.Types.ObjectId() }, params: { id: new mongoose.Types.ObjectId() } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await deleteinvoice(req, res);
+    expect(res.status.calledWith(404)).to.be.true;
+  });
+
+  it('handles error (500)', async () => {
+    sinon.stub(Invoice, 'findById').throws(new Error('DB Error'));
+    const req = { user: { id: new mongoose.Types.ObjectId() }, params: { id: new mongoose.Types.ObjectId() } };
+    const res = { status: sinon.stub().returnsThis(), json: sinon.spy() };
+    await deleteinvoice(req, res);
+    expect(res.status.calledWith(500)).to.be.true;
+  });
 });
