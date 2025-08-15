@@ -57,6 +57,7 @@ res.status(500).json({ message: error.message });
 }
 };
 
+//delete a single application from the db
 const deleteapplication = async (
 req,
 res) => {
