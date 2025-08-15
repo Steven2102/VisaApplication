@@ -39,7 +39,7 @@ const ApplicationList = ({ applications, setApplications, setEditingApplication,
             {invoices.some(inv => inv.applicationId === application._id) ? (
               <Link
                 to={`/view-invoice/${application._id}`}
-                className="bg-green-600 text-white px-4 py-2 rounded"
+                className="bg-green-500 text-white px-4 py-2 rounded"
                 style={{ textDecoration: 'none', marginRight: '0.5rem' }}
               >
                 View Invoice
