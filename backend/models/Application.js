@@ -15,4 +15,4 @@ const applicationSchema = new mongoose.Schema({
     //completed: { type: Boolean, default: false },
 });
 
-module.exports = mongoose.model('application', applicationSchema);
+module.exports = mongoose.model('Application', applicationSchema);

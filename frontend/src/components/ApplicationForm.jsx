@@ -26,16 +26,23 @@ const ApplicationForm = ({ applications, setApplications, editingApplication, se
 
   useEffect(() => {
     if (editingApplication) {
+      // Ensure date strings are formatted as yyyy-MM-dd for date inputs
+      const formatDate = (d) => {
+        if (!d) return '';
+        const dateObj = new Date(d);
+        if (isNaN(dateObj.getTime())) return '';
+        return dateObj.toISOString().split('T')[0];
+      };
       setFormData({
         title: editingApplication.title,
         cost: editingApplication.cost || '',
-        firstname: editingApplication.firstname,
-        lastname: editingApplication.lastname,
-        countryofresidence: editingApplication.countryofresidence,
-        email: editingApplication.email,
-        city: editingApplication.city,
-        dateofarrival: editingApplication.dateofarrival,
-        dateofdeparture: editingApplication.dateofdeparture,
+        firstname: editingApplication.firstname || '',
+        lastname: editingApplication.lastname || '',
+        countryofresidence: editingApplication.countryofresidence || '',
+        email: editingApplication.email || '',
+        city: editingApplication.city || '',
+        dateofarrival: formatDate(editingApplication.dateofarrival),
+        dateofdeparture: formatDate(editingApplication.dateofdeparture),
       });
     } else {
       setFormData({
@@ -66,10 +73,10 @@ const ApplicationForm = ({ applications, setApplications, editingApplication, se
     e.preventDefault();
     try {
       if (editingApplication) {
-        const response = await axiosInstance.put(`/api/applications/${editingApplication.id}`, formData, {
+        const response = await axiosInstance.put(`/api/applications/${editingApplication._id}`, formData, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
-        setApplications(applications.map((application) => (application.id === response.data.id ? response.data : application)));
+        setApplications(applications.map((application) => (application._id === response.data._id ? response.data : application)));
       } else {
         const response = await axiosInstance.post('/api/applications', formData, {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -89,6 +96,7 @@ const ApplicationForm = ({ applications, setApplications, editingApplication, se
         dateofdeparture: ''
       });
     } catch (error) {
+      console.error('Failed to save application', error?.response?.data || error.message);
       alert('Failed to save application.');
     }
   };

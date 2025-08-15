@@ -2,7 +2,7 @@ import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 import { Link } from 'react-router-dom';
 
-const ApplicationList = ({ applications, setApplications, setEditingApplication }) => {
+const ApplicationList = ({ applications, setApplications, setEditingApplication, invoices = [] }) => {
   const { user } = useAuth();
 
   const handleDelete = async (applicationId) => {
@@ -36,13 +36,23 @@ const ApplicationList = ({ applications, setApplications, setEditingApplication 
             >
               Delete
             </button>
-            <Link
-              to={`/request-invoice/${application._id}`}
-              className="bg-purple-500 text-white px-4 py-2 rounded"
-              style={{ textDecoration: 'none', marginRight: '0.5rem' }}
-            >
-              Request Invoice
-            </Link>
+            {invoices.some(inv => inv.applicationId === application._id) ? (
+              <Link
+                to={`/view-invoice/${application._id}`}
+                className="bg-green-600 text-white px-4 py-2 rounded"
+                style={{ textDecoration: 'none', marginRight: '0.5rem' }}
+              >
+                View Invoice
+              </Link>
+            ) : (
+              <Link
+                to={`/request-invoice/${application._id}`}
+                className="bg-purple-500 text-white px-4 py-2 rounded"
+                style={{ textDecoration: 'none', marginRight: '0.5rem' }}
+              >
+                Request Invoice
+              </Link>
+            )}
           </div>
         </div>
       ))}

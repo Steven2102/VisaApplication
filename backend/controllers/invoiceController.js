@@ -9,6 +9,17 @@ const getinvoices = async (req, res) => {
   }
 };
 
+// Get a single invoice by applicationId for the authenticated user
+const getInvoiceByApplication = async (req, res) => {
+  try {
+    const invoice = await Invoice.findOne({ applicationId: req.params.applicationId, userId: req.user.id });
+    if (!invoice) return res.status(404).json({ message: 'Invoice not found' });
+    res.json(invoice);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const addinvoice = async (req, res) => {
   const { applicationId, title, cost, method, details } = req.body;
   try {
@@ -58,4 +69,4 @@ const deleteinvoice = async (req, res) => {
   }
 };
 
-module.exports = { getinvoices, addinvoice, updateinvoice, deleteinvoice };
+module.exports = { getinvoices, getInvoiceByApplication, addinvoice, updateinvoice, deleteinvoice };

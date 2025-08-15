@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import axiosInstance from '../axiosConfig';
 
 const RequestInvoicePage = () => {
-  const { _id } = useParams(); // applicationId
+  const { id } = useParams(); // should match the route param name
   const navigate = useNavigate();
   const [application, setApplication] = useState(null);
   const [method, setMethod] = useState('');
@@ -13,7 +13,7 @@ const RequestInvoicePage = () => {
   useEffect(() => {
     const fetchApplication = async () => {
       try {
-        const res = await axiosInstance.get(`/api/applications/${_id}`);
+        const res = await axiosInstance.get(`/api/applications/${id}`);
         setApplication(res.data);
       } catch (err) {
         setApplication(null);
@@ -22,13 +22,13 @@ const RequestInvoicePage = () => {
       }
     };
     fetchApplication();
-  }, [_id]);
+  }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axiosInstance.post('/api/invoices', {
-        applicationId: _id,
+        applicationId: id,
         title: application.title,
         cost: application.cost,
         method,

@@ -9,6 +9,15 @@ const getApplication = async (req, res) => {
   }
 };
 
+const getApplications = async (req, res) => {
+  try {
+    const applications = await Application.find({ userId: req.user.id });
+    res.json(applications);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const addapplication = async (
 req,
 res) => {
@@ -56,4 +65,4 @@ res.json({ message: 'application deleted' });
 res.status(500).json({ message: error.message });
 }
 };
-module.exports = { getApplication, addapplication, updateapplication, deleteapplication };
+module.exports = { getApplications, getApplication, addapplication, updateapplication, deleteapplication };

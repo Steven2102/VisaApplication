@@ -8,6 +8,7 @@ const Applications = () => {
   const { user } = useAuth();
   const [applications, setApplications] = useState([]);
   const [editingApplication, setEditingApplication] = useState(null);
+  const [invoices, setInvoices] = useState([]);
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -20,8 +21,19 @@ const Applications = () => {
         alert('Failed to fetch applications.');
       }
     };
+    const fetchInvoices = async () => {
+      try {
+        const response = await axiosInstance.get('/api/invoices', {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        setInvoices(response.data);
+      } catch (error) {
+        // silently ignore for now
+      }
+    };
 
     fetchApplications();
+    fetchInvoices();
   }, [user]);
 
   return (
@@ -32,7 +44,7 @@ const Applications = () => {
         editingApplication={editingApplication}
         setEditingApplication={setEditingApplication}
       />
-      <ApplicationList applications={applications} setApplications={setApplications} setEditingApplication={setEditingApplication} />
+  <ApplicationList applications={applications} setApplications={setApplications} setEditingApplication={setEditingApplication} invoices={invoices} />
     </div>
   );
 };

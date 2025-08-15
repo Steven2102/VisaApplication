@@ -5,4 +5,17 @@ const axiosInstance = axios.create({
   //baseURL: 'http://52.62.107.232:5001', // live
   headers: { 'Content-Type': 'application/json' },
 });
+
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token'); // or sessionStorage, or from context
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 export default axiosInstance;
+

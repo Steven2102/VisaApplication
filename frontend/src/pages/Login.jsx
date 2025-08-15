@@ -11,8 +11,9 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.post('/api/auth/login', formData);
-      login(response.data);
+  const response = await axiosInstance.post('/api/auth/login', formData);
+  // Persist handled in context login
+  login(response.data);
       navigate('/applications');
     } catch (error) {
       alert('Login failed. Please try again.');

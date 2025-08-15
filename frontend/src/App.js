@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Applications from './pages/Applications';
 import RequestInvoicePage from './pages/RequestInvoicePage';
+import ViewInvoicePage from './pages/ViewInvoicePage';
 import { useAuth } from './context/AuthContext';
 import './App.css';
 
@@ -83,6 +84,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/applications" element={<Applications />} />
         <Route path="/request-invoice/:id" element={<RequestInvoicePage />} />
+        <Route path="/view-invoice/:applicationId" element={<ViewInvoicePage />} />
       </Routes>
       <Footer />
     </Router>
