@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import axiosInstance from '../axiosConfig';
 
 const RequestInvoicePage = () => {
-  const { id } = useParams(); // should match the route param name
+  const { id } = useParams(); 
   const navigate = useNavigate();
   const [application, setApplication] = useState(null);
   const [method, setMethod] = useState('');
