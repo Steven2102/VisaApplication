@@ -33,6 +33,7 @@ res.status(500).json({ message: error.message });
 }
 };
 
+//update an application in the db
 const updateapplication = async (
 req,
 res) => {
