@@ -9,6 +9,7 @@ const getApplication = async (req, res) => {
   }
 };
 
+//fetches all applications
 const getApplications = async (req, res) => {
   try {
     const applications = await Application.find({ userId: req.user.id });
