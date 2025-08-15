@@ -12,7 +12,6 @@ const applicationSchema = new mongoose.Schema({
     city: { type: String },
     dateofarrival: { type: Date },
     dateofdeparture: { type: Date },
-    //completed: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model('Application', applicationSchema);
