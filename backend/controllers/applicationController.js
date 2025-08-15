@@ -1,4 +1,5 @@
 const Application = require('../models/Application');
+//fetches a single application
 const getApplication = async (req, res) => {
   try {
     const application = await Application.findById(req.params.id);
