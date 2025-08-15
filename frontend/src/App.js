@@ -49,7 +49,7 @@ const Home = () => {
             Welcome to E-Visa Application
           </h1>
           <h1 className="hero-text" style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>
-            Your gateway to heaven
+            The fastest way to Australia
           </h1>
           {user && (
             <Link
