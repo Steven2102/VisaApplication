@@ -1,6 +1,7 @@
 
 const mongoose = require('mongoose');
 
+//Application Schema MongoDB
 const applicationSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     title: { type: String, required: true },
@@ -12,7 +13,6 @@ const applicationSchema = new mongoose.Schema({
     city: { type: String },
     dateofarrival: { type: Date },
     dateofdeparture: { type: Date },
-    //completed: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model('Application', applicationSchema);

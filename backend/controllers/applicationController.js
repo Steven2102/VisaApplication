@@ -1,4 +1,5 @@
 const Application = require('../models/Application');
+//fetches a single application
 const getApplication = async (req, res) => {
   try {
     const application = await Application.findById(req.params.id);
@@ -19,6 +20,7 @@ const getApplications = async (req, res) => {
   }
 };
 
+//creates a new visa application
 const addapplication = async (
 req,
 res) => {
@@ -31,6 +33,7 @@ res.status(500).json({ message: error.message });
 }
 };
 
+//update an application in the db
 const updateapplication = async (
 req,
 res) => {
@@ -54,6 +57,7 @@ res.status(500).json({ message: error.message });
 }
 };
 
+//delete a single application from the db
 const deleteapplication = async (
 req,
 res) => {
