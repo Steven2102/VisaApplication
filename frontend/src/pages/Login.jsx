@@ -12,7 +12,6 @@ const Login = () => {
     e.preventDefault();
     try {
   const response = await axiosInstance.post('/api/auth/login', formData);
-  // Persist handled in context login
   login(response.data);
       navigate('/applications');
     } catch (error) {
