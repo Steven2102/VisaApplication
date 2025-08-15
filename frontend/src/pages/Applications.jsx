@@ -28,7 +28,7 @@ const Applications = () => {
         });
         setInvoices(response.data);
       } catch (error) {
-        // silently ignore for 
+        // silently ignore for now
       }
     };
 
