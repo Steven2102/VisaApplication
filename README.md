@@ -1,37 +1,137 @@
 
-**Assessment 1 (Total Marks **20**)**
+**Users**
 
-Assignment: **Software requirements analysis and design (**Full-Stack CRUD Application Development with DevOps Practices**)**
+**Login**
 
-
----
-
-**Objective**
-
-You have been provided with a starter project that includes user authentication using Node.js, React.js, and MongoDB. Your task is to extend this application by implementing CRUD (Create, Read, Update, Delete) operations of different featuresfor a real-world application of your choice, while following industry best practices such as: 
-
-* **Project Management with JIRA**
-* **Requirement Diagram**, **Block Definition Diagram (**BDD), Parametric Diagram using**SysML**
-* **Version Control using GitHub**
-* **CI/CD Integration for Automated Deployment**
+Email: Steven@gmail.com
+Password: 1
 
 ---
 
-**GitHub link of the starter project: **[https://github.com/rajuiit/sdlapps](https://github.com/rajuiit/sdlapps)
+**Register**
+
+Feel free to create/delete new users, which are added to MongoDB
+1. Logout
+2. Register (Name, Email, Password needed)
+3. Login with the new credentials
+
+**Update Profile**
+
+1. Login
+2. Click on "Profile"
+3. Change/add details
+4. Click on "Update Profile"
+
+
+**Applications**
+
+
+**Create new Application**
+
+1. Login
+2. Click on "Applications" (either from the main page or with the button in the Navbar)
+3. Fill in the application form
+4. Click on "Submit Application"
 
 ---
+
+**View Applications Application**
+
+1. Login
+2. Click on "Applications" (either from the main page or with the button in the Navbar)
+3. View existing applications of the user beneath the application form
+
+---
+
+**Edit Application**
+
+1. Login
+2. Click on "Applications" (either from the main page or with the button in the Navbar)
+3. View existing applications of the user beneath the application form
+4. Click on "Edit" 
+5. Fill in the application form with new details
+6. Click on "Update Application"
+
+---
+
+**Delete Application**
+
+1. Login
+2. Click on Applications (either from the main page or with the button in the Navbar)
+3. View existing applications of the user beneath the application form
+4. Click on "Delete"
+
+
+**Invoice**
+
+
+**Create new Invoice**
+
+1. Login
+2. Click on "Applications" (either from the main page or with the button in the Navbar)
+3. View existing applications of the user beneath the application form
+4. Click on "Request Invoice"
+5. Choose payment method from the drop down menu
+6. Provide Payment Details
+7. Click on "Request Invoice"
+
+---
+
+**View Invoice**
+
+1. Login
+2. Click on "Applications" (either from the main page or with the button in the Navbar)
+3. View existing applications of the user beneath the application form
+4. Click on "View Invoice"
+
+---
+
+**Update Invoice**
+
+1. Login
+2. Click on "Applications" (either from the main page or with the button in the Navbar)
+3. View existing applications of the user beneath the application form
+4. Click on "View Invoice"
+5. Click on "Edit Invoice"
+6. Choose new payment method fromt the drop down menu
+7. Provide Payment Details
+8. Click on "Save Changes"
+
+---
+
+**Update Invoice**
+
+1. Login
+2. Click on "Applications" (either from the main page or with the button in the Navbar)
+3. View existing applications of the user beneath the application form
+4. Click on "View Invoice"
+5. Click on "Edit Invoice"
+6. Choose new payment method fromt the drop down menu
+7. Provide Payment Details
+8. Click on "Save Changes"
+
+---
+
+**Delete Invoice**
+
+1. Login
+2. Click on "Applications" (either from the main page or with the button in the Navbar)
+3. View existing applications of the user beneath the application form
+4. Click on "Delete Invoice" (An Invoice must exist)
+
+
 
 **Requirement**
 
 1. **Choose a Real-World Application**
 
-We will send you an email to choose a Real-World project. If you face any difficulties in choosing your project, please contact your tutor.
+E-Visa Management System
 
 2. **Project Design with SysML and Project Management with JIRA**
 
 * Draw a requirements diagram, Block Definition Diagram (BDD), and Parametric Diagram based on your project (Connect all functional features).
 * Create a JIRA project and define:
-  * Epic
+  * Epic 
   * User Stories (features required in your app)
   * Child issues or Subtasks (breaking down development work)
   * Sprint Implementation (organizing work into milestones)

@@ -167,7 +167,7 @@ const ApplicationForm = ({ applications, setApplications, editingApplication, se
         className="w-full mb-4 p-2 border rounded"
       />
       <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
-        {editingApplication ? 'Update Button' : 'Create Button'}
+        {editingApplication ? 'Update application' : 'Submit application'}
       </button>
     </form>
   );

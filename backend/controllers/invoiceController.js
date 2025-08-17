@@ -9,7 +9,6 @@ const getinvoices = async (req, res) => {
   }
 };
 
-// Get a single invoice by applicationId for the authenticated user
 const getInvoiceByApplication = async (req, res) => {
   try {
     const invoice = await Invoice.findOne({ applicationId: req.params.applicationId, userId: req.user.id });
