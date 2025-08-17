@@ -101,19 +101,6 @@ Feel free to create/delete new users, which are added to MongoDB
 
 ---
 
-**Update Invoice**
-
-1. Login
-2. Click on "Applications" (either from the main page or with the button in the Navbar)
-3. View existing applications of the user beneath the application form
-4. Click on "View Invoice"
-5. Click on "Edit Invoice"
-6. Choose new payment method fromt the drop down menu
-7. Provide Payment Details
-8. Click on "Save Changes"
-
----
-
 **Delete Invoice**
 
 1. Login
