@@ -23,7 +23,9 @@ Feel free to create/delete new users, which are added to MongoDB
 4. Click on "Update Profile"
 
 
+
 **Applications**
+
 
 
 **Create new Application**
