@@ -37,7 +37,7 @@ Feel free to create/delete new users, which are added to MongoDB
 
 ---
 
-**View Applications Application**
+**View Applications**
 
 1. Login
 2. Click on "Applications" (either from the main page or with the button in the Navbar)
